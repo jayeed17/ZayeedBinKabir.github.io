@@ -65,7 +65,7 @@ textarea{min-height:70px;resize:vertical}
     <summary>Personalize it</summary>
     <form class="form" id="form">
       <label for="nm">Their name<input id="nm" maxlength="30" placeholder="e.g. Ammu"></label>
-      <label for="age">Age (candles, up to 12)<input id="age" type="number" min="1" max="120" placeholder="e.g. 21"></label>
+      <label for="age">Age<input id="age" type="number" min="1" max="120" placeholder="e.g. 21"></label>
       <label for="note">Message shown after the candles go out<textarea id="note" maxlength="300" placeholder="Love you, have the best year yet"></textarea></label>
       <button class="primary" type="submit">Update cake</button>
       <div id="link"></div>
@@ -76,7 +76,7 @@ textarea{min-height:70px;resize:vertical}
 <script>
 const $=s=>document.querySelector(s);
 const svg=$("#cake"),NS="http://www.w3.org/2000/svg";
-let state={name:"",age:5,note:"Wishing you a year full of good food, loud laughs and everything you've been hoping for."};
+let state={name:"Somaia",age:22,note:"Somaia, 22 looks so good on you. I hope you know how much light you bring into the lives around you, mine included. Thank you for every laugh, every long talk, and every time you showed up just as yourself. This year, I hope you are as gentle with yourself as you are with everyone else, and that every wish you make tonight finds its way to you. Happy birthday. I am so grateful you were born."};
 let candles=[],done=false;
 
 function el(t,a,p){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);(p||svg).appendChild(e);return e}
@@ -97,13 +97,15 @@ function drawCake(){
   for(let i=0;i<34;i++){const top=i<14;const x=top?110+Math.random()*180:65+Math.random()*270;const y=top?165+Math.random()*35:262+Math.random()*30;
     el("rect",{x,y,width:8,height:3,rx:1.5,fill:cols[i%5],transform:`rotate(${Math.random()*180} ${x+4} ${y+1.5})`});}
   // candles
-  const n=Math.max(1,Math.min(12,state.age||5));
-  const span=180,start=200-span/2;
+  const big=(state.age||5)>12, digits=String(state.age).split("");
+  const n=big?digits.length:Math.max(1,Math.min(12,state.age||5));
+  const span=big?70*(n-1):180,start=200-span/2;
   for(let i=0;i<n;i++){
-    const x=n===1?200:start+span*i/(n-1), h=48+(i%2)*6;
+    const x=n===1?200:start+span*i/(n-1), h=big?70:48+(i%2)*6;
     const g=el("g",{class:"candle",tabindex:0,role:"button","aria-label":"Candle "+(i+1)});
-    el("rect",{x:x-5,y:132-h,width:10,height:h,rx:3,fill:cols[i%5]},g);
-    el("path",{d:`M${x-5} ${140-h} l10 -6 v8 l-10 6Z M${x-5} ${160-h} l10 -6 v8 l-10 6Z M${x-5} ${180-h} l10 -6 v8 l-10 6Z`,fill:"#fff",opacity:.55},g);
+    if(big){const t=el("text",{x,y:134,"text-anchor":"middle","font-size":92,"font-weight":800,"font-family":"Nunito,system-ui,sans-serif",fill:cols[(i+3)%5],stroke:"#fff","stroke-width":3,"paint-order":"stroke"},g);t.textContent=digits[i];}
+    else{el("rect",{x:x-5,y:132-h,width:10,height:h,rx:3,fill:cols[i%5]},g);
+    el("path",{d:`M${x-5} ${140-h} l10 -6 v8 l-10 6Z M${x-5} ${160-h} l10 -6 v8 l-10 6Z M${x-5} ${180-h} l10 -6 v8 l-10 6Z`,fill:"#fff",opacity:.55},g);}
     el("line",{x1:x,y1:132-h,x2:x,y2:124-h,stroke:"#3a2a2a","stroke-width":2},g);
     el("ellipse",{cx:x,cy:110-h,rx:12,ry:18,fill:"var(--flame)",opacity:.18,class:"flame"},g);
     const f=el("path",{d:`M${x} ${98-h} C${x+9} ${110-h} ${x+8} ${124-h} ${x} ${125-h} C${x-8} ${124-h} ${x-9} ${110-h} ${x} ${98-h}Z`,fill:"var(--flame)",class:"flame"},g);
@@ -201,10 +203,10 @@ $("#form").addEventListener("submit",e=>{
   state.note=$("#note").value.trim()||state.note;
   const slug=state.name.replace(/[^A-Za-z0-9 ]/g,"").trim().replace(/\s+/g,"-");
   if(slug){location.hash=slug;$("#link").textContent="Name added to this page's link. Share the page and it opens with their name on top."}
-  try{localStorage.setItem("bday",JSON.stringify(state))}catch(e){}
+  
   apply();
 });
-try{const s=JSON.parse(localStorage.getItem("bday")||"null");if(s){state=Object.assign(state,s);$("#age").value=s.age||"";$("#note").value=s.note||""}}catch(e){}
+$("#age").value=state.age;$("#note").value=state.note;$("#nm").value=state.name;
 fromHash();addEventListener("hashchange",()=>{fromHash();apply()});
 apply();
 </script>
