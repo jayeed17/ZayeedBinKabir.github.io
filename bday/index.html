@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>*,*::before,*::after{box-sizing:border-box}body{margin:0}[hidden]{display:none!important}</style>
+<title>Blow the Candles</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pacifico&family=Nunito:wght@400;700;800&display=swap">
+<style>
+/* Layout: one-screen party table — name banner, cake center stage, controls under it. Deliberate single night-party theme. */
+:root{
+  --night:#2a1838; --night2:#3d2150; --frost:#ffb3cf; --frost-dk:#e7799f;
+  --cream:#fff4e6; --sponge:#f2c48d; --flame:#ffcc4d; --ink:#fff4e6; --muted:#d8bfe6;
+  --display:"Pacifico","Brush Script MT",cursive; --body:"Nunito",system-ui,sans-serif;
+  color-scheme:dark;
+}
+html,body{height:100%}
+body{background:radial-gradient(120% 80% at 50% 0%,var(--night2),var(--night) 70%);color:var(--ink);font-family:var(--body);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  overflow-x:hidden;display:flex;flex-direction:column;align-items:center}
+#fx{position:fixed;inset:0;pointer-events:none;z-index:5}
+main{width:100%;max-width:560px;display:flex;flex-direction:column;align-items:center;gap:14px;padding-block:22px 28px;flex:1}
+.eyebrow{font-weight:800;letter-spacing:.14em;text-transform:uppercase;font-size:12px;color:var(--muted)}
+h1{font-family:var(--display);font-weight:400;font-size:clamp(34px,9vw,56px);line-height:1.15;margin:0;text-align:center;text-wrap:balance;color:var(--frost)}
+#hint{font-size:15px;color:var(--muted);text-align:center;min-height:1.4em}
+#stage{width:100%;max-width:420px;touch-action:none;user-select:none;-webkit-user-select:none}
+svg{width:100%;height:auto;display:block;overflow:visible}
+.candle{cursor:pointer}
+.flame{transform-box:fill-box;transform-origin:50% 100%;animation:flicker .18s infinite alternate ease-in-out}
+.out .flame{animation:none;opacity:0;transition:opacity .25s}
+.smoke{opacity:0}
+.out .smoke{animation:smoke 1.4s ease-out forwards}
+@keyframes flicker{from{transform:scale(1,1) rotate(-3deg)}to{transform:scale(.9,1.12) rotate(3deg)}}
+@keyframes smoke{0%{opacity:.7;transform:translateY(0)}100%{opacity:0;transform:translateY(-30px)}}
+#msg{background:color-mix(in srgb,var(--cream) 8%,transparent);border:1px solid color-mix(in srgb,var(--frost) 35%,transparent);border-radius:14px;padding:14px 18px;max-width:46ch;text-align:center;font-size:17px;line-height:1.5}
+.row{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+button{font:800 15px var(--body);border-radius:999px;padding:11px 20px;border:2px solid var(--frost);background:transparent;color:var(--ink);cursor:pointer}
+button.primary{background:var(--frost);color:var(--night)}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--flame);outline-offset:2px}
+details{width:100%;max-width:420px;border-top:1px dashed color-mix(in srgb,var(--muted) 40%,transparent);padding-top:12px}
+summary{cursor:pointer;font-weight:800;color:var(--muted);text-align:center}
+.form{display:grid;gap:10px;margin-top:12px}
+label{font-size:13px;font-weight:700;color:var(--muted);display:grid;gap:4px}
+input,textarea{font:16px var(--body);background:color-mix(in srgb,var(--cream) 6%,transparent);color:var(--ink);border:1px solid color-mix(in srgb,var(--muted) 40%,transparent);border-radius:10px;padding:9px 11px}
+textarea{min-height:70px;resize:vertical}
+#link{font-size:13px;word-break:break-all;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){.flame{animation:none}}
+</style>
+
+<canvas id="fx"></canvas>
+<main>
+  <div class="eyebrow">it's your day</div>
+  <h1 id="title">Happy Birthday!</h1>
+  <div id="hint">Make a wish, then tap or swipe up over the candles to blow them out</div>
+  <div id="stage"><svg id="cake" viewBox="0 0 400 330" aria-label="Birthday cake"></svg></div>
+  <div id="msg" hidden></div>
+  <div class="row">
+    <button class="primary" id="blowAll">Blow them all 💨</button>
+    <button id="relight">Relight</button>
+    <button id="sing">Play the song 🎵</button>
+  </div>
+  <details>
+    <summary>Personalize it</summary>
+    <form class="form" id="form">
+      <label for="nm">Their name<input id="nm" maxlength="30" placeholder="e.g. Ammu"></label>
+      <label for="age">Age (candles, up to 12)<input id="age" type="number" min="1" max="120" placeholder="e.g. 21"></label>
+      <label for="note">Message shown after the candles go out<textarea id="note" maxlength="300" placeholder="Love you, have the best year yet"></textarea></label>
+      <button class="primary" type="submit">Update cake</button>
+      <div id="link"></div>
+    </form>
+  </details>
+</main>
+
+<script>
+const $=s=>document.querySelector(s);
+const svg=$("#cake"),NS="http://www.w3.org/2000/svg";
+let state={name:"",age:5,note:"Wishing you a year full of good food, loud laughs and everything you've been hoping for."};
+let candles=[],done=false;
+
+function el(t,a,p){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);(p||svg).appendChild(e);return e}
+
+function drawCake(){
+  svg.innerHTML="";candles=[];done=false;
+  // plate
+  el("ellipse",{cx:200,cy:305,rx:175,ry:18,fill:"#e9dcef",opacity:.9});
+  // bottom tier
+  el("rect",{x:50,y:205,width:300,height:95,rx:14,fill:"var(--sponge)"});
+  el("rect",{x:50,y:245,width:300,height:10,fill:"var(--frost-dk)",opacity:.8});
+  el("path",{d:"M50 219 Q50 205 64 205 H336 Q350 205 350 219 V228 q-12 14 -24 0 q-12 18 -26 0 q-14 12 -28 0 q-12 20 -26 0 q-14 10 -28 0 q-12 16 -26 0 q-14 12 -28 0 q-12 18 -26 0 q-14 10 -28 0 q-12 14 -26 0 q-12 12 -10 0Z",fill:"var(--frost)"});
+  // top tier
+  el("rect",{x:95,y:130,width:210,height:80,rx:12,fill:"var(--cream)"});
+  el("path",{d:"M95 142 Q95 130 107 130 H293 Q305 130 305 142 V150 q-10 16 -21 0 q-11 12 -22 0 q-10 18 -22 0 q-11 10 -22 0 q-10 16 -22 0 q-11 12 -22 0 q-10 18 -22 0 q-11 10 -22 0 q-10 14 -18 0Z",fill:"var(--frost)"});
+  // sprinkles
+  const cols=["#7fd3ff","#ffcc4d","#b7f08a","#c9a2ff","#ff8a8a"];
+  for(let i=0;i<34;i++){const top=i<14;const x=top?110+Math.random()*180:65+Math.random()*270;const y=top?165+Math.random()*35:262+Math.random()*30;
+    el("rect",{x,y,width:8,height:3,rx:1.5,fill:cols[i%5],transform:`rotate(${Math.random()*180} ${x+4} ${y+1.5})`});}
+  // candles
+  const n=Math.max(1,Math.min(12,state.age||5));
+  const span=180,start=200-span/2;
+  for(let i=0;i<n;i++){
+    const x=n===1?200:start+span*i/(n-1), h=48+(i%2)*6;
+    const g=el("g",{class:"candle",tabindex:0,role:"button","aria-label":"Candle "+(i+1)});
+    el("rect",{x:x-5,y:132-h,width:10,height:h,rx:3,fill:cols[i%5]},g);
+    el("path",{d:`M${x-5} ${140-h} l10 -6 v8 l-10 6Z M${x-5} ${160-h} l10 -6 v8 l-10 6Z M${x-5} ${180-h} l10 -6 v8 l-10 6Z`,fill:"#fff",opacity:.55},g);
+    el("line",{x1:x,y1:132-h,x2:x,y2:124-h,stroke:"#3a2a2a","stroke-width":2},g);
+    el("ellipse",{cx:x,cy:110-h,rx:12,ry:18,fill:"var(--flame)",opacity:.18,class:"flame"},g);
+    const f=el("path",{d:`M${x} ${98-h} C${x+9} ${110-h} ${x+8} ${124-h} ${x} ${125-h} C${x-8} ${124-h} ${x-9} ${110-h} ${x} ${98-h}Z`,fill:"var(--flame)",class:"flame"},g);
+    el("path",{d:`M${x} ${110-h} C${x+4} ${116-h} ${x+3} ${123-h} ${x} ${123-h} C${x-3} ${123-h} ${x-4} ${116-h} ${x} ${110-h}Z`,fill:"#fff",class:"flame"},g);
+    el("circle",{cx:x,cy:118-h,r:5,fill:"#cfc6d6",class:"smoke"},g);
+    const c={g,x,y:110-h,lit:true};candles.push(c);
+    g.addEventListener("click",()=>blow(c));
+    g.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();blow(c)}});
+  }
+  $("#msg").hidden=true;
+  $("#hint").textContent="Make a wish, then tap or swipe up over the candles to blow them out";
+}
+
+function blow(c){
+  if(!c.lit)return;c.lit=false;c.g.classList.add("out");puff();
+  const left=candles.filter(k=>k.lit).length;
+  if(left===0)celebrate();
+  else $("#hint").textContent=left+" to go…";
+}
+
+// swipe-up blowing
+let last=null;
+$("#stage").addEventListener("pointerdown",e=>{last={x:e.clientX,y:e.clientY,t:performance.now()}});
+$("#stage").addEventListener("pointermove",e=>{
+  if(!last)return;const r=svg.getBoundingClientRect(),s=400/r.width;
+  const dy=last.y-e.clientY;
+  if(dy>2){const px=(e.clientX-r.left)*s;candles.forEach(c=>{if(c.lit&&Math.abs(c.x-px)<28)blow(c)})}
+  last={x:e.clientX,y:e.clientY};
+});
+["pointerup","pointercancel","pointerleave"].forEach(t=>$("#stage").addEventListener(t,()=>last=null));
+
+$("#blowAll").onclick=()=>candles.forEach((c,i)=>setTimeout(()=>blow(c),i*90));
+$("#relight").onclick=()=>{stopSong();drawCake()};
+$("#sing").onclick=()=>playSong();
+
+function celebrate(){
+  if(done)return;done=true;
+  $("#hint").textContent="Your wish is on its way ✨";
+  const m=$("#msg");m.textContent=state.note;m.hidden=!state.note;
+  burst();playSong();
+}
+
+// ---------- audio ----------
+let ac,noteTimers=[];
+function ctx(){if(!ac)ac=new (window.AudioContext||window.webkitAudioContext)();if(ac.state==="suspended")ac.resume();return ac}
+function puff(){try{const a=ctx(),len=a.sampleRate*.25,b=a.createBuffer(1,len,a.sampleRate),d=b.getChannelData(0);
+  for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*(1-i/len)*.35;
+  const s=a.createBufferSource(),f=a.createBiquadFilter();f.type="bandpass";f.frequency.value=900;s.buffer=b;s.connect(f).connect(a.destination);s.start()}catch(e){}}
+const SONG=[["G4",.75],["G4",.25],["A4",1],["G4",1],["C5",1],["B4",2],
+  ["G4",.75],["G4",.25],["A4",1],["G4",1],["D5",1],["C5",2],
+  ["G4",.75],["G4",.25],["G5",1],["E5",1],["C5",1],["B4",1],["A4",2],
+  ["F5",.75],["F5",.25],["E5",1],["C5",1],["D5",1],["C5",3]];
+const FREQ={C:0,D:2,E:4,F:5,G:7,A:9,B:11};
+function hz(n){const s=FREQ[n[0]],o=+n[1];return 261.63*Math.pow(2,(s+(o-4)*12)/12)}
+function stopSong(){noteTimers.forEach(clearTimeout);noteTimers=[]}
+function playSong(){
+  try{stopSong();const a=ctx();let t=a.currentTime+.1;const beat=.42;
+    for(const [n,d] of SONG){const o=a.createOscillator(),g=a.createGain(),o2=a.createOscillator();
+      o.type="triangle";o2.type="sine";o.frequency.value=hz(n);o2.frequency.value=hz(n)*2;
+      g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.22,t+.02);g.gain.exponentialRampToValueAtTime(.001,t+d*beat*.95);
+      o.connect(g);o2.connect(g);g.connect(a.destination);o.start(t);o2.start(t);o.stop(t+d*beat);o2.stop(t+d*beat);t+=d*beat}
+  }catch(e){}
+}
+
+// ---------- confetti ----------
+const cv=$("#fx"),cx=cv.getContext("2d");let parts=[],raf=0;
+function size(){cv.width=innerWidth*devicePixelRatio;cv.height=innerHeight*devicePixelRatio;cx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0)}
+addEventListener("resize",size);size();
+function burst(){
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+  const cols=["#ffb3cf","#ffcc4d","#7fd3ff","#b7f08a","#c9a2ff","#fff4e6"];
+  for(let i=0;i<220;i++)parts.push({x:innerWidth/2+(Math.random()-.5)*120,y:innerHeight*.45,vx:(Math.random()-.5)*14,vy:-Math.random()*16-4,
+    r:Math.random()*Math.PI,vr:(Math.random()-.5)*.3,w:6+Math.random()*6,h:3+Math.random()*4,c:cols[i%6],life:0});
+  if(!raf)tick();
+}
+function tick(){
+  cx.clearRect(0,0,innerWidth,innerHeight);
+  parts=parts.filter(p=>p.y<innerHeight+20&&p.life<400);
+  for(const p of parts){p.vy+=.35;p.vx*=.99;p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;p.life++;
+    cx.save();cx.translate(p.x,p.y);cx.rotate(p.r);cx.fillStyle=p.c;cx.fillRect(-p.w/2,-p.h/2,p.w,p.h);cx.restore()}
+  raf=parts.length?requestAnimationFrame(tick):0;
+}
+
+// ---------- personalize ----------
+function apply(){
+  $("#title").textContent=state.name?`Happy Birthday, ${state.name}!`:"Happy Birthday!";
+  document.title=state.name?`${state.name}'s Cake`:"Blow the Candles";
+  drawCake();
+}
+function fromHash(){const h=decodeURIComponent(location.hash.slice(1));if(/^[A-Za-z0-9-]+$/.test(h)){state.name=h.replace(/-/g," ");$("#nm").value=state.name}}
+$("#form").addEventListener("submit",e=>{
+  e.preventDefault();
+  state.name=$("#nm").value.trim();
+  const a=parseInt($("#age").value,10);state.age=a>0?a:5;
+  state.note=$("#note").value.trim()||state.note;
+  const slug=state.name.replace(/[^A-Za-z0-9 ]/g,"").trim().replace(/\s+/g,"-");
+  if(slug){location.hash=slug;$("#link").textContent="Name added to this page's link. Share the page and it opens with their name on top."}
+  try{localStorage.setItem("bday",JSON.stringify(state))}catch(e){}
+  apply();
+});
+try{const s=JSON.parse(localStorage.getItem("bday")||"null");if(s){state=Object.assign(state,s);$("#age").value=s.age||"";$("#note").value=s.note||""}}catch(e){}
+fromHash();addEventListener("hashchange",()=>{fromHash();apply()});
+apply();
+</script>
+
+</html>
