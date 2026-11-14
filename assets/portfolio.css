@@ -165,3 +165,56 @@ footer { background: #091321b0; border-top: 1px solid var(--line); }
 @media (prefers-reduced-motion: reduce) {
   .portrait, .portrait img, .portrait figcaption, .map-panel { transform: none; transition: none; }
 }
+
+/* Full-bleed product-style hero with a scene behind the content. */
+body::before {
+  background: radial-gradient(ellipse at 75% 0%, #1a2439, transparent 52%), var(--dark);
+}
+.hero {
+  display: block;
+  position: relative;
+  isolation: isolate;
+  padding: 0;
+  overflow: hidden;
+  background: #090d17;
+  border-bottom: 1px solid var(--line);
+}
+.hero-content {
+  position: relative;
+  min-height: clamp(540px, 74vh, 760px);
+  display: grid;
+  align-content: center;
+  justify-items: start;
+  padding-block: 84px;
+}
+.hero-art, .hero-art canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.hero-art {
+  z-index: -1;
+  background: radial-gradient(ellipse at 79% 44%, #3c3b65, #13192d 43%, #090d17 75%);
+}
+.hero-art::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, #090d17 5%, #090d17d9 27%, #090d1720 61%, transparent 83%);
+}
+.hero-copy { max-width: 630px; }
+.hero h1 { max-width: 9ch; font-size: clamp(4rem, 9vw, 8rem); letter-spacing: -.083em; line-height: .9; }
+.hero-portrait { width: 53px; height: 53px; object-fit: cover; object-position: center 28%; border-radius: 50%; margin-top: 26px; border: 1px solid #ffffff65; }
+.audit-feature { grid-template-columns: .8fr 1.2fr; }
+.audit-stats { display: grid; align-content: center; justify-items: start; padding: clamp(24px, 5vw, 50px); background: radial-gradient(ellipse at 10% 0%, #394361, #1c2944 72%); }
+.audit-stats strong { font-size: clamp(2.2rem, 5vw, 4rem); line-height: 1.05; letter-spacing: -.07em; }
+.audit-stats span { color: var(--muted); margin-bottom: 12px; }
+.audit-stats span:last-child { margin-bottom: 0; }
+@media (max-width: 760px) {
+  .hero-content { min-height: 565px; align-content: end; padding-block: 155px 42px; }
+  .hero-art::after { background: linear-gradient(0deg, #090d17 4%, #090d17ed 27%, #090d1726 76%); }
+  .hero h1 { font-size: clamp(3.5rem, 12vw, 5.3rem); }
+  .audit-feature { grid-template-columns: 1fr; }
+}
