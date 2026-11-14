@@ -218,3 +218,18 @@ body::before {
   .hero h1 { font-size: clamp(3.5rem, 12vw, 5.3rem); }
   .audit-feature { grid-template-columns: 1fr; }
 }
+.hero-art::before {
+  content: "";
+  position: absolute;
+  top: 10%;
+  right: 8%;
+  width: min(42vw, 560px);
+  aspect-ratio: 1.22;
+  border-radius: 44% 56% 63% 37% / 57% 41% 59% 43%;
+  background: radial-gradient(ellipse at 34% 16%, #e9e7ff, #9290db 17%, #4e4a92 37%, #171e49 65%, #ae687d 87%, #342b62);
+  box-shadow: inset 16px 18px 45px #e3d9ff50, inset -26px -28px 64px #0e113eca, 18px 32px 75px #040610b0;
+  transform: rotate(-26deg);
+}
+@media (max-width: 760px) {
+  .hero-art::before { width: min(74vw, 360px); top: 0; right: 0; }
+}
