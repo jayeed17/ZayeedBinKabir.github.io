@@ -91,7 +91,7 @@ h3 { font-size: clamp(1.3rem, 2.6vw, 1.8rem); letter-spacing: -.045em; line-heig
 .section-copy { max-width: 49ch; margin-block: 18px; }
 .map-panel { overflow: hidden; padding: 12px; }
 .map-panel img { width: 100%; border-radius: 9px; }
-.map-panel ol { display: grid; grid-template-columns: 1fr 1fr 1.1fr; list-style: none; gap: 8px; padding: 12px 4px 4px; }
+.map-panel ol { display: grid; grid-template-columns: 1fr 1fr; list-style: none; gap: 8px; padding: 12px 4px 4px; }
 .map-panel li { padding-left: 8px; border-left: 2px solid var(--accent); font-size: .86rem; line-height: 1.28; font-weight: 700; }
 .map-panel li span { display: block; margin-top: 4px; color: var(--muted); font-size: .75rem; font-weight: 400; }
 .experience-section { grid-template-columns: 1.25fr .75fr; align-items: start; }
@@ -126,7 +126,7 @@ footer { background: #091321b0; border-top: 1px solid var(--line); }
   .nav ul { gap: 10px; }
   .nav li a, .nav-contact { font-size: .75rem; }
   .nav-contact { padding: 4px 6px; }
-  .nav-contact span { display: none; }
+  .nav-contact .arrow { display: none; }
   .section-heading, .footer { flex-direction: column; align-items: start; }
   .project-grid, .more-work { grid-template-columns: 1fr; }
   .project-visual img { height: 160px; }
@@ -134,4 +134,34 @@ footer { background: #091321b0; border-top: 1px solid var(--line); }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .project { transform: none; transition: none; }
+}
+
+.arrow {
+  display: inline-block;
+  width: .7em;
+  height: .7em;
+  margin-inline: .2em;
+  background: currentColor;
+  clip-path: polygon(32% 0, 100% 0, 100% 68%, 85% 68%, 85% 25%, 11% 100%, 0 89%, 74% 15%, 32% 15%);
+}
+.arrow-down { transform: rotate(90deg); }
+
+.portrait {
+  transform: rotateY(calc(-13deg + var(--ry, 0deg))) rotateX(calc(6deg + var(--rx, 0deg))) rotateZ(3deg);
+  transform-style: preserve-3d;
+  transition: transform .22s ease-out;
+}
+.portrait img, .portrait figcaption { transform: translateZ(12px); }
+.project {
+  background:
+    radial-gradient(ellipse at var(--light-x, 50%) var(--light-y, 0%), #809ed726, transparent 60%),
+    linear-gradient(155deg, #213752, #121f32 60%);
+}
+.map-panel {
+  transform: perspective(950px) rotateX(calc(3deg + var(--rx, 0deg))) rotateY(var(--ry, 0deg));
+  transition: transform .22s ease-out;
+  box-shadow: 0 8px 0 #101c2e, 0 9px 0 #52637d55, 0 24px 42px #02071375;
+}
+@media (prefers-reduced-motion: reduce) {
+  .portrait, .portrait img, .portrait figcaption, .map-panel { transform: none; transition: none; }
 }
