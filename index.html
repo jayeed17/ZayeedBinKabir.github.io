@@ -22,15 +22,16 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
   <link rel="alternate" type="application/rss+xml" title="Zayeed Bin Kabir: Writing" href="/feed.xml">
-  <link rel="stylesheet" href="assets/site.css?v=5">
-  <script src="assets/site.js?v=4" defer></script>
-  <script type="module" src="assets/scene.js?v=4"></script>
+  <link rel="stylesheet" href="assets/site.css?v=6">
+  <script src="assets/site.js?v=6" defer></script>
+  <script type="module" src="assets/scene.js?v=6"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <div class="progress" aria-hidden="true"></div>
   <div class="spotlight" aria-hidden="true"></div>
   <div class="grain" aria-hidden="true"></div>
+  <div class="bg-canvas" aria-hidden="true"><canvas id="scene"></canvas></div>
 
   <header class="site-header">
     <nav class="nav" aria-label="Main navigation">
@@ -49,8 +50,8 @@
   <main id="main">
     <!-- HERO -->
     <section class="hero" id="top" aria-labelledby="hero-heading">
-      <div class="hero-canvas" aria-hidden="true"><canvas id="scene"></canvas><div class="hero-orb"></div></div>
       <div class="hero-inner shell">
+        <div class="hero-text">
         <p class="kicker reveal"><span class="pulse"></span>New York City · Baruch College '27</p>
         <h1 id="hero-heading" class="reveal">
           <span class="line">Zayeed</span>
@@ -65,10 +66,20 @@
         </div>
         <dl class="hero-stats reveal">
           <div><dt>Projects shipped</dt><dd><span class="count" data-to="12">12</span>+</dd></div>
-          <div><dt>Rows audited, DOE capstone</dt><dd><span class="count" data-to="21.8" data-dec="1">21.8</span>M</dd></div>
+          <div><dt>Rows audited</dt><dd><span class="count" data-to="21.8" data-dec="1">21.8</span>M</dd></div>
           <div><dt>Live apps</dt><dd><span class="count" data-to="5">5</span></dd></div>
           <div><dt>Languages spoken</dt><dd><span class="count" data-to="5">5</span></dd></div>
         </dl>
+        </div>
+        <figure class="hero-photo reveal" id="hero-photo">
+          <div class="hp-card tilt">
+            <img src="assets/portrait.webp" width="560" height="700" alt="Zayeed Bin Kabir" fetchpriority="high">
+            <figcaption><span class="pulse"></span>New York City · <time class="clock">--:--</time> ET</figcaption>
+          </div>
+          <div class="hp-chip c1"><strong>Vizora</strong><span>BI app · live</span></div>
+          <div class="hp-chip c2"><strong>21.8M</strong><span>rows audited</span></div>
+          <div class="hp-chip c3"><strong>5</strong><span>languages</span></div>
+        </figure>
       </div>
       <a class="scroll-hint" href="#work" aria-label="Scroll to work"><span></span></a>
     </section>
@@ -361,20 +372,22 @@
         <p>I grew up in Dhaka, Bangladesh, and now study Computer Information Systems (Data Analytics track) at Baruch College, with a minor in Sociology. I graduate in May 2027.</p>
         <p>I like projects with a real answer at the end, like whether a trading signal survives fees, which no-bid contracts deserve a second look, or why I keep hanging pieces in the middlegame. Outside of data I run marathons, shoot weddings and write about F1.</p>
         <div class="langs" aria-label="Languages I speak"><span>English</span><span>Bangla</span><span>Hindi</span><span>Urdu</span><span>Spanish</span></div>
-        <div class="edu">
+      </div>
+      <div class="about-side">
+        <div class="edu reveal">
           <p class="mono">Education</p>
           <h3>Baruch College, CUNY</h3>
           <p>BBA, Computer Information Systems · Data Analytics<br>Minor in Sociology · Expected May 2027</p>
         </div>
-      </div>
-      <div class="about-visual reveal">
-        <figure class="portrait tilt">
-          <img src="assets/portrait.webp" width="560" height="700" alt="Portrait of Zayeed Bin Kabir">
-          <figcaption><span class="pulse"></span>Based in NYC · <time class="clock">--:--</time> ET</figcaption>
-        </figure>
-        <figure class="route">
-          <img src="assets/journey.svg" width="410" height="164" alt="Map showing the route from Dhaka, Bangladesh, to New York City" loading="lazy">
-        </figure>
+        <div class="edu now reveal">
+          <p class="mono"><span class="pulse"></span> Right now</p>
+          <ul>
+            <li>Data analytics apprentice at NYC TTPR</li>
+            <li>Building Darkroom, a camera-to-cloud photo app</li>
+            <li>Shipping Vizora as a desktop app</li>
+            <li>Writing the Weekly Brief</li>
+          </ul>
+        </div>
       </div>
     </section>
 
