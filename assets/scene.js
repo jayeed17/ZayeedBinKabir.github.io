@@ -86,6 +86,41 @@ function init(THREE) {
   );
   world.add(coreGlow);
 
+  /* portrait inside the core: a camera-facing sprite, so the globe keeps spinning around it */
+  const portrait = new THREE.Sprite(new THREE.SpriteMaterial({ transparent: true, opacity: 0, depthWrite: true }));
+  portrait.scale.setScalar(2.15);
+  portrait.renderOrder = -1;
+  world.add(portrait);
+  const photo = new Image();
+  photo.onload = () => {
+    const S = 512, c = document.createElement('canvas');
+    c.width = c.height = S;
+    const g = c.getContext('2d');
+    // square crop centred on the face
+    const side = Math.min(photo.width, photo.height * 0.8);
+    const sx = (photo.width - side) / 2, sy = photo.height * 0.06;
+    g.save();
+    g.beginPath(); g.arc(S / 2, S / 2, S / 2 - 14, 0, Math.PI * 2); g.clip();
+    g.drawImage(photo, sx, sy, side, side, 0, 0, S, S);
+    // soft green edge so it melts into the globe
+    const v = g.createRadialGradient(S / 2, S / 2, S * 0.3, S / 2, S / 2, S / 2);
+    v.addColorStop(0, 'rgba(6,9,8,0)');
+    v.addColorStop(0.82, 'rgba(6,9,8,0.18)');
+    v.addColorStop(1, 'rgba(16,185,129,0.55)');
+    g.fillStyle = v; g.fillRect(0, 0, S, S);
+    g.restore();
+    // rim
+    g.beginPath(); g.arc(S / 2, S / 2, S / 2 - 14, 0, Math.PI * 2);
+    g.lineWidth = 5; g.strokeStyle = 'rgba(52,211,153,0.85)';
+    g.shadowColor = '#34d399'; g.shadowBlur = 18; g.stroke();
+    const tex = new THREE.CanvasTexture(c);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    portrait.material.map = tex;
+    portrait.material.needsUpdate = true;
+    portrait.userData.ready = true;
+  };
+  photo.src = new URL('./portrait.webp', import.meta.url).href;
+
   /* orbit ring of data particles */
   const R = 420;
   const rp = new Float32Array(R * 3);
@@ -130,8 +165,10 @@ function init(THREE) {
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
     mobile = w < 760;
-    world.position.set(mobile ? 0.4 : 3.3, mobile ? 1.6 : 0, 0);
-    world.scale.setScalar(mobile ? 0.82 : 1);
+    // phones: globe + portrait sit centred above the text instead of behind it
+    const topY = Math.tan((camera.fov * Math.PI) / 360) * 9; // half-height of view at the globe's depth
+    world.position.set(mobile ? 0 : 3.3, mobile ? topY - (topY * 2) * (190 / h) : 0, 0);
+    world.scale.setScalar(mobile ? 0.6 : 1);
   };
   addEventListener('resize', resize);
   resize();
@@ -159,6 +196,8 @@ function init(THREE) {
     world.rotation.x = my * 0.3;
     core.rotation.y = -t * 0.25;
     core.rotation.z = t * 0.12;
+    if (portrait.userData.ready && portrait.material.opacity < 1) portrait.material.opacity = Math.min(1, portrait.material.opacity + 0.02);
+    portrait.scale.setScalar(2.15 + Math.sin(t * 1.2) * 0.03);
     ringGroup.rotation.y = t * 0.18;
     ringGroup2.rotation.y = -t * 0.11;
     dust.rotation.y = t * 0.01;

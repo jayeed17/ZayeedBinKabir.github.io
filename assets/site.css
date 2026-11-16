@@ -293,7 +293,8 @@ h2 { margin: 0; font-size: clamp(2.4rem, 5.6vw, 4.4rem); line-height: 1; letter-
   .stack-grid { grid-template-columns: 1fr; }
   .route { position: relative; left: 0; bottom: 0; width: 100%; margin-top: 14px; }
   .scroll-hint { display: none; }
-  .hero-canvas.ready canvas { opacity: .5; }
+  .hero { padding-top: 330px; align-items: flex-start; }
+  .hero-canvas.ready canvas { opacity: 1; }
 }
 @media (max-width: 430px) {
   .nav-cta { padding: 8px 10px; font-size: 0; gap: 0; }
