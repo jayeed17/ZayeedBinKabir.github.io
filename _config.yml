@@ -1,0 +1,31 @@
+# GitHub Pages builds this site with Jekyll automatically on every push.
+title: Zayeed Bin Kabir
+description: Data analytics student in NYC who builds BI tools, ML pipelines and data products.
+url: https://zayeedbinkabir.com
+timezone: America/New_York
+markdown: kramdown
+kramdown:
+  input: GFM
+  hard_wrap: false
+  syntax_highlighter_opts:
+    disable: true
+
+# Weekly writing: _posts/YYYY-MM-DD-slug.md  ->  /writing/YYYY/MM/DD/slug/
+permalink: /writing/:year/:month/:day/:title/
+
+# Monthly travel: _travel/YYYY-MM-place.md  ->  /travel/YYYY-MM-place/
+collections:
+  travel:
+    output: true
+    permalink: /travel/:name/
+
+defaults:
+  - scope: { path: "", type: posts }
+    values: { layout: post }
+  - scope: { path: "", type: travel }
+    values: { layout: trip }
+
+exclude:
+  - README.md
+  - HOW-TO-POST.md
+  - templates/

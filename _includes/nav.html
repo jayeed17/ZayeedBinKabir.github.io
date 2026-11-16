@@ -1,0 +1,13 @@
+<header class="site-header">
+  <nav class="nav" aria-label="Main navigation">
+    <a class="brand" href="/" aria-label="Zayeed Bin Kabir, home">ZBK<span>.</span></a>
+    <ul>
+      <li><a href="/#work">Work</a></li>
+      <li><a href="/#experience">Experience</a></li>
+      <li class="m"><a href="/writing/"{% if page.url contains '/writing/' %} class="on" aria-current="page"{% endif %}>Writing</a></li>
+      <li class="m"><a href="/travel/"{% if page.url contains '/travel/' %} class="on" aria-current="page"{% endif %}>Travel</a></li>
+      <li><a href="/#about">About</a></li>
+    </ul>
+    <a class="nav-cta" href="/#contact"><span class="pulse"></span>Open to data roles</a>
+  </nav>
+</header>

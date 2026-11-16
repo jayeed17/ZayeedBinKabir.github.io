@@ -56,15 +56,16 @@
 
   /* scroll progress, nav hide/show, active link */
   const nav = document.querySelector('.nav');
-  const links = [...document.querySelectorAll('.nav ul a')];
+  const links = [...document.querySelectorAll('.nav ul a')].filter((a) => a.getAttribute('href').startsWith('#'));
   const sections = links.map((a) => document.querySelector(a.getAttribute('href')));
+  const bar = document.querySelector('.progress');
   let lastY = 0;
   const onScroll = () => {
     const y = scrollY;
     const max = root.scrollHeight - innerHeight;
     root.style.setProperty('--p', max > 0 ? (y / max).toFixed(4) : 0);
-    document.querySelector('.progress').style.setProperty('--p', max > 0 ? (y / max).toFixed(4) : 0);
-    nav.classList.toggle('hide', y > lastY && y > 400);
+    if (bar) bar.style.setProperty('--p', max > 0 ? (y / max).toFixed(4) : 0);
+    if (nav) nav.classList.toggle('hide', y > lastY && y > 400);
     lastY = y;
     let current = -1;
     sections.forEach((s, idx) => { if (s && s.getBoundingClientRect().top < innerHeight * 0.4) current = idx; });
@@ -130,6 +131,35 @@
       setTimeout(() => btn.classList.remove('copied'), 1800);
     } catch { location.href = `mailto:${btn.dataset.copy}`; }
   }));
+
+  /* lightbox for trip photos */
+  const box = document.querySelector('.lightbox');
+  if (box) {
+    const img = box.querySelector('img');
+    const cap = box.querySelector('figcaption');
+    const shots = [...document.querySelectorAll('.gallery a')];
+    let at = 0;
+    const show = (i) => {
+      at = (i + shots.length) % shots.length;
+      img.src = shots[at].href;
+      img.alt = shots[at].querySelector('img').alt;
+      cap.textContent = shots[at].dataset.caption || '';
+      box.hidden = false;
+      document.body.style.overflow = 'hidden';
+    };
+    const close = () => { box.hidden = true; document.body.style.overflow = ''; };
+    shots.forEach((a, i) => a.addEventListener('click', (e) => { e.preventDefault(); show(i); }));
+    box.querySelector('.lb-close').addEventListener('click', close);
+    box.querySelector('.lb-prev').addEventListener('click', () => show(at - 1));
+    box.querySelector('.lb-next').addEventListener('click', () => show(at + 1));
+    box.addEventListener('click', (e) => { if (e.target === box) close(); });
+    addEventListener('keydown', (e) => {
+      if (box.hidden) return;
+      if (e.key === 'Escape') close();
+      if (e.key === 'ArrowLeft') show(at - 1);
+      if (e.key === 'ArrowRight') show(at + 1);
+    });
+  }
 
   /* NYC clock */
   const clock = document.querySelector('.clock');

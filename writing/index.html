@@ -1,0 +1,39 @@
+---
+layout: base
+title: Writing
+dek: A weekly read on the news I'm following in business, markets, tech and sport, plus my reporting for The Ticker.
+---
+{% assign posts = site.posts | where_exp: "p", "p.hidden != true" %}
+<section class="shell list-page">
+  <header class="section-head reveal">
+    <p class="label"><span>Weekly</span> Writing</p>
+    <h1 class="page-title">The Weekly Brief.</h1>
+    <p class="page-dek">{{ page.dek }}</p>
+  </header>
+  <a class="ticker-note reveal" href="https://theticker.org/staff_name/zayeed-bin-kabir/">
+    <span class="mono">Published reporting</span>
+    <strong>My articles in The Ticker, Baruch's student newspaper ↗</strong>
+  </a>
+  {% if posts.size > 0 %}
+    {% assign weeks = posts | group_by_exp: "p", "p.date | date: '%G · Week %V'" %}
+    {% for w in weeks %}
+    <section class="week reveal">
+      <h2 class="week-label">{{ w.name }}</h2>
+      <ul class="post-list">
+        {% for post in w.items %}
+        <li>
+          <a href="{{ post.url }}">
+            <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%a, %b %-d" }}</time>
+            <span class="pl-title">{{ post.title }}</span>
+            {% if post.dek %}<span class="pl-dek">{{ post.dek }}</span>{% endif %}
+            {% if post.tags.size > 0 %}<span class="pl-tags">{% for t in post.tags limit:3 %}<i>{{ t }}</i>{% endfor %}</span>{% endif %}
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+    </section>
+    {% endfor %}
+  {% else %}
+    <div class="empty reveal"><span class="pulse"></span><p><strong>The first issue drops this week.</strong> New posts every week, sometimes twice a week. You can follow along with <a href="/feed.xml">RSS</a>.</p></div>
+  {% endif %}
+</section>

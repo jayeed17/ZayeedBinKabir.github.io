@@ -1,0 +1,34 @@
+---
+layout: base
+---
+{% assign words = content | number_of_words %}
+{% assign minutes = words | divided_by: 220 | plus: 1 %}
+<article class="shell article">
+  <a class="back" href="/writing/">← All writing</a>
+  <header class="article-head reveal">
+    <p class="label"><span>{{ page.date | date: "Week %V" }}</span> {{ page.date | date: "%b %-d, %Y" }} · {{ minutes }} min read</p>
+    <h1 class="article-title">{{ page.title }}</h1>
+    {% if page.dek %}<p class="dek">{{ page.dek }}</p>{% endif %}
+    {% if page.tags.size > 0 %}<ul class="stack">{% for t in page.tags %}<li>{{ t }}</li>{% endfor %}</ul>{% endif %}
+  </header>
+  {% if page.cover %}<figure class="article-cover reveal"><img src="{{ page.cover }}" alt="{{ page.cover_alt | default: page.title | escape }}"></figure>{% endif %}
+  <div class="prose reveal">
+{{ content }}
+  </div>
+  {% if page.ticker_url %}
+  <a class="ticker-note" href="{{ page.ticker_url }}">
+    <span class="mono">Also in The Ticker</span>
+    <strong>Read the published version ↗</strong>
+  </a>
+  {% endif %}
+  {% if page.sources.size > 0 %}
+  <section class="sources">
+    <p class="mono">Sources</p>
+    <ol>{% for s in page.sources %}<li><a href="{{ s.url }}">{{ s.name }}</a></li>{% endfor %}</ol>
+  </section>
+  {% endif %}
+  <nav class="pager" aria-label="More writing">
+    {% if page.previous %}<a href="{{ page.previous.url }}"><small>← Older</small>{{ page.previous.title }}</a>{% else %}<span></span>{% endif %}
+    {% if page.next %}<a class="next" href="{{ page.next.url }}"><small>Newer →</small>{{ page.next.title }}</a>{% endif %}
+  </nav>
+</article>

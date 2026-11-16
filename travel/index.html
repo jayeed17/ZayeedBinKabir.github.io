@@ -1,0 +1,37 @@
+---
+layout: base
+title: Travel
+dek: One trip a month, written as a 24 to 36 hour guide. Where I ate, what I did, what it cost and whether I'd go back.
+---
+{% assign trips = site.travel | where_exp: "t", "t.hidden != true" | sort: "date" | reverse %}
+{% assign countries = trips | map: "country" | uniq %}
+<section class="shell list-page">
+  <header class="section-head reveal">
+    <p class="label"><span>Monthly</span> Travel</p>
+    <h1 class="page-title">Places I've been.</h1>
+    <p class="page-dek">{{ page.dek }}</p>
+  </header>
+  {% if trips.size > 0 %}
+  <dl class="hero-stats travel-stats reveal">
+    <div><dt>Trips logged</dt><dd>{{ trips.size }}</dd></div>
+    <div><dt>Countries</dt><dd>{{ countries.size }}</dd></div>
+    <div><dt>Latest</dt><dd>{{ trips.first.place }}</dd></div>
+  </dl>
+  <div class="trip-grid">
+    {% for t in trips %}
+    <a class="trip-card tilt reveal" href="{{ t.url }}">
+      <div class="tc-img"{% if t.cover %} style="background-image:url('{{ t.cover }}')"{% endif %}>
+        {% if t.hours %}<span class="tc-hours">{{ t.hours }} hrs</span>{% endif %}
+      </div>
+      <div class="tc-body">
+        <p class="mono">{{ t.date | date: "%b %Y" }} · {{ t.country }}</p>
+        <h2>{{ t.title }}</h2>
+        {% if t.dek %}<p>{{ t.dek }}</p>{% endif %}
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+  {% else %}
+    <div class="empty reveal"><span class="pulse"></span><p><strong>The first trip goes up this month.</strong> Each one is a 24 to 36 hour guide with photos: where I ate, what I did, and whether I'd go back.</p></div>
+  {% endif %}
+</section>

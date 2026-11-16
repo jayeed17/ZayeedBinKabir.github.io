@@ -1,3 +1,7 @@
+---
+# Processed by Jekyll so the Writing and Travel sections update automatically.
+---
+{% assign posts = site.posts | where_exp: "p", "p.hidden != true" %}
 <!doctype html>
 <html lang="en">
 <head>
@@ -16,9 +20,10 @@
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23060908'/%3E%3Cpath d='M20 21h24L20 43h24' fill='none' stroke='%2334d399' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/site.css?v=3">
-  <script src="assets/site.js?v=3" defer></script>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
+  <link rel="alternate" type="application/rss+xml" title="Zayeed Bin Kabir: Writing" href="/feed.xml">
+  <link rel="stylesheet" href="assets/site.css?v=4">
+  <script src="assets/site.js?v=4" defer></script>
   <script type="module" src="assets/scene.js?v=3"></script>
 </head>
 <body>
@@ -33,8 +38,9 @@
       <ul>
         <li><a href="#work">Work</a></li>
         <li><a href="#experience">Experience</a></li>
+        <li class="m"><a href="#writing">Writing</a></li>
+        <li class="m"><a href="#travel">Travel</a></li>
         <li><a href="#about">About</a></li>
-        <li><a href="#stack">Stack</a></li>
       </ul>
       <a class="nav-cta" href="#contact"><span class="pulse"></span>Open to data roles</a>
     </nav>
@@ -297,10 +303,60 @@
       </ol>
     </section>
 
+    <!-- WRITING -->
+    <section class="shell section" id="writing" aria-labelledby="writing-heading">
+      <header class="section-head reveal">
+        <p class="label"><span>03</span> Writing · weekly</p>
+        <h2 id="writing-heading">The Weekly Brief.</h2>
+        <a class="btn ghost magnetic" href="/writing/">All writing →</a>
+      </header>
+      <div class="brief-grid">
+        {% if posts.size > 0 %}
+          {% for post in posts limit:3 %}
+          <a class="brief tilt reveal{% if forloop.first %} lead{% endif %}" href="{{ post.url }}">
+            <p class="mono">{{ post.date | date: "Week %V · %b %-d" }}{% if forloop.first %} <span class="new">New</span>{% endif %}</p>
+            <h3>{{ post.title }}</h3>
+            {% if post.dek %}<p>{{ post.dek }}</p>{% endif %}
+            {% if post.tags.size > 0 %}<ul class="stack">{% for t in post.tags limit:3 %}<li>{{ t }}</li>{% endfor %}</ul>{% endif %}
+          </a>
+          {% endfor %}
+        {% else %}
+          <div class="brief lead reveal"><p class="mono"><span class="pulse"></span> Launching this week</p><h3>A weekly read on the news I'm following.</h3><p>Business, markets, tech and sport. One or two posts a week.</p></div>
+        {% endif %}
+        <a class="brief ticker reveal" href="https://theticker.org/staff_name/zayeed-bin-kabir/">
+          <p class="mono">Published in</p>
+          <h3>The Ticker ↗</h3>
+          <p>My business, aviation and Formula 1 reporting for Baruch's student newspaper.</p>
+        </a>
+      </div>
+    </section>
+
+    <!-- TRAVEL -->
+    <section class="shell section" id="travel" aria-labelledby="travel-heading">
+      <header class="section-head reveal">
+        <p class="label"><span>04</span> Travel · monthly</p>
+        <h2 id="travel-heading">Places I've been.</h2>
+        <a class="btn ghost magnetic" href="/travel/">All trips →</a>
+      </header>
+      {% assign trips = site.travel | where_exp: "t", "t.hidden != true" | sort: "date" | reverse %}
+      {% if trips.size > 0 %}
+      <div class="trip-grid">
+        {% for t in trips limit:3 %}
+        <a class="trip-card tilt reveal" href="{{ t.url }}">
+          <div class="tc-img"{% if t.cover %} style="background-image:url('{{ t.cover }}')"{% endif %}>{% if t.hours %}<span class="tc-hours">{{ t.hours }} hrs</span>{% endif %}</div>
+          <div class="tc-body"><p class="mono">{{ t.date | date: "%b %Y" }} · {{ t.country }}</p><h3>{{ t.title }}</h3>{% if t.dek %}<p>{{ t.dek }}</p>{% endif %}</div>
+        </a>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="empty reveal"><span class="pulse"></span><p><strong>The first trip goes up this month.</strong> Each one is a 24 to 36 hour guide with photos: where I ate, what I did, and whether I'd go back.</p></div>
+      {% endif %}
+    </section>
+
     <!-- ABOUT -->
     <section class="shell section about" id="about" aria-labelledby="about-heading">
       <div class="about-copy reveal">
-        <p class="label"><span>03</span> About</p>
+        <p class="label"><span>05</span> About</p>
         <h2 id="about-heading">From Dhaka<br>to New York City.</h2>
         <p>I grew up in Dhaka, Bangladesh, and now study Computer Information Systems (Data Analytics track) at Baruch College, with a minor in Sociology. I graduate in May 2027.</p>
         <p>I like projects with a real answer at the end, like whether a trading signal survives fees, which no-bid contracts deserve a second look, or why I keep hanging pieces in the middlegame. Outside of data I run marathons, shoot weddings and write about F1.</p>
@@ -325,7 +381,7 @@
     <!-- STACK -->
     <section class="shell section" id="stack" aria-labelledby="stack-heading">
       <header class="section-head reveal">
-        <p class="label"><span>04</span> Stack</p>
+        <p class="label"><span>06</span> Stack</p>
         <h2 id="stack-heading">Tools I reach for.</h2>
       </header>
       <div class="stack-grid">
@@ -340,7 +396,7 @@
   <!-- CONTACT -->
   <footer class="contact" id="contact">
     <div class="shell">
-      <p class="label reveal"><span>05</span> Contact</p>
+      <p class="label reveal"><span>07</span> Contact</p>
       <h2 class="reveal">Let's build<br><span class="grad">something real.</span></h2>
       <p class="reveal contact-sub">I'm looking for data analytics, BI and data science roles and internships. The fastest way to reach me is email.</p>
       <div class="contact-row reveal">
@@ -351,7 +407,7 @@
       </div>
       <div class="colophon">
         <span>© 2026 Zayeed Bin Kabir</span>
-        <span>Hand-built with HTML, CSS and Three.js. No framework. Hosted on GitHub Pages.</span>
+        <span>Hand-built with HTML, CSS and Three.js. Hosted on GitHub Pages. <a href="/feed.xml">RSS</a></span>
         <a href="#top">Back to top ↑</a>
       </div>
     </div>

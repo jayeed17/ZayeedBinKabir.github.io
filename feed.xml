@@ -1,0 +1,24 @@
+---
+layout: null
+---
+<?xml version="1.0" encoding="UTF-8"?>{% assign posts = site.posts | where_exp: "p", "p.hidden != true" %}
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Zayeed Bin Kabir: Writing &amp; Travel</title>
+    <link>{{ site.url }}/writing/</link>
+    <atom:link href="{{ site.url }}/feed.xml" rel="self" type="application/rss+xml"/>
+    <description>{{ site.description | xml_escape }}</description>
+    <language>en-us</language>
+    <lastBuildDate>{{ site.time | date_to_rfc822 }}</lastBuildDate>
+    {% assign trips = site.travel | where_exp: "t", "t.hidden != true" %}{% assign items = posts | concat: trips | sort: "date" | reverse %}
+    {% for item in items limit:30 %}
+    <item>
+      <title>{{ item.title | xml_escape }}</title>
+      <link>{{ site.url }}{{ item.url }}</link>
+      <guid isPermaLink="true">{{ site.url }}{{ item.url }}</guid>
+      <pubDate>{{ item.date | date_to_rfc822 }}</pubDate>
+      <description>{{ item.dek | default: item.excerpt | strip_html | xml_escape }}</description>
+    </item>
+    {% endfor %}
+  </channel>
+</rss>

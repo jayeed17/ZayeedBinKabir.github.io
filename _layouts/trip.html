@@ -1,0 +1,53 @@
+---
+layout: base
+---
+{% assign trips = site.travel | sort: "date" %}
+{% for t in trips %}{% if t.url == page.url %}{% assign idx = forloop.index0 %}{% endif %}{% endfor %}
+{% assign prev_i = idx | minus: 1 %}{% assign next_i = idx | plus: 1 %}
+<article class="trip">
+  <header class="trip-hero"{% if page.cover %} style="--cover:url('{{ page.cover }}')"{% endif %}>
+    <div class="shell">
+      <a class="back" href="/travel/">← All trips</a>
+      <p class="label"><span>{{ page.date | date: "%B %Y" }}</span> {{ page.place }}{% if page.country %}, {{ page.country }}{% endif %}</p>
+      <h1 class="article-title">{{ page.title }}</h1>
+      {% if page.dek %}<p class="dek">{{ page.dek }}</p>{% endif %}
+      <ul class="trip-meta">
+        {% if page.hours %}<li><strong>{{ page.hours }}</strong> hours</li>{% endif %}
+        {% if page.spend %}<li><strong>{{ page.spend }}</strong> spend</li>{% endif %}
+        {% if page.rating %}<li><strong>{{ page.rating }}</strong>/10 would go back</li>{% endif %}
+        {% if page.photos.size > 0 %}<li><strong>{{ page.photos.size }}</strong> photos</li>{% endif %}
+      </ul>
+    </div>
+  </header>
+  <div class="shell trip-body">
+    {% if page.highlights.size > 0 %}
+    <aside class="highlights reveal">
+      <p class="mono">Don't miss</p>
+      <ul>{% for h in page.highlights %}<li>{{ h }}</li>{% endfor %}</ul>
+    </aside>
+    {% endif %}
+    <div class="prose reveal">
+{{ content }}
+    </div>
+  </div>
+  {% if page.photos.size > 0 %}
+  <section class="shell gallery" aria-label="Photos">
+    {% for p in page.photos %}
+    <a href="{{ p.src }}" data-caption="{{ p.caption | escape }}" class="reveal{% if p.wide %} wide{% endif %}">
+      <img src="{{ p.src }}" alt="{{ p.caption | default: page.place | escape }}" loading="lazy">
+      {% if p.caption %}<span>{{ p.caption }}</span>{% endif %}
+    </a>
+    {% endfor %}
+  </section>
+  <div class="lightbox" hidden>
+    <button class="lb-close" aria-label="Close">×</button>
+    <button class="lb-prev" aria-label="Previous photo">‹</button>
+    <figure><img src="" alt=""><figcaption></figcaption></figure>
+    <button class="lb-next" aria-label="Next photo">›</button>
+  </div>
+  {% endif %}
+  <nav class="shell pager" aria-label="More trips">
+    {% if idx > 0 %}{% assign p = trips[prev_i] %}<a href="{{ p.url }}"><small>← Earlier trip</small>{{ p.title }}</a>{% else %}<span></span>{% endif %}
+    {% if next_i < trips.size %}{% assign n = trips[next_i] %}<a class="next" href="{{ n.url }}"><small>Next trip →</small>{{ n.title }}</a>{% endif %}
+  </nav>
+</article>
