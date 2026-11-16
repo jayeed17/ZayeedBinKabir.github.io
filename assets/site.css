@@ -316,6 +316,7 @@ h2 { margin: 0; font-size: clamp(2.4rem, 5.6vw, 4.4rem); line-height: 1; letter-
 .brief p:not(.mono) { margin: 0; color: var(--muted); font-size: .95rem; }
 .brief .stack { margin-top: auto; }
 .brief.ticker { border-style: dashed; }
+.brief.lead.solo { grid-row: auto; grid-column: span 2; }
 .new { padding: 2px 8px; border-radius: 999px; background: var(--green); color: #04110b; font-weight: 700; }
 .empty { display: flex; gap: 16px; align-items: flex-start; padding: 26px 28px; border: 1px dashed var(--line-2); border-radius: var(--r); background: rgba(52, 211, 153, .03); }
 .empty .pulse { margin-top: 9px; }
@@ -425,13 +426,14 @@ h2 { margin: 0; font-size: clamp(2.4rem, 5.6vw, 4.4rem); line-height: 1; letter-
 
 @media (max-width: 1000px) {
   .brief-grid { grid-template-columns: 1fr 1fr; }
-  .brief.lead { grid-column: 1 / -1; grid-row: auto; }
+  .brief.lead, .brief.lead.solo { grid-column: 1 / -1; grid-row: auto; }
   .trip-grid { grid-template-columns: 1fr 1fr; }
   .trip-body { grid-template-columns: 1fr; gap: 0; }
   .highlights { position: static; grid-column: 1; grid-row: auto; }
 }
 @media (max-width: 760px) {
   .brief-grid, .trip-grid { grid-template-columns: 1fr; }
+  .brief.lead.solo { grid-column: auto; }
   .week { grid-template-columns: 1fr; gap: 10px; }
   .post-list a { grid-template-columns: 1fr; }
   .post-list time { grid-row: auto; }
