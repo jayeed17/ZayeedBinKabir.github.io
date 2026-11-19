@@ -29,3 +29,4 @@ exclude:
   - README.md
   - HOW-TO-POST.md
   - templates/
+  - scripts/
