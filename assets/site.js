@@ -134,11 +134,11 @@
 
   /* lightbox for trip photos */
   const box = document.querySelector('.lightbox');
-  if (box) {
+  if (box && document.querySelector('.gallery a, a.zoom')) {
     document.body.appendChild(box);
     const img = box.querySelector('img');
     const cap = box.querySelector('figcaption');
-    const shots = [...document.querySelectorAll('.gallery a')];
+    const shots = [...document.querySelectorAll('.gallery a, a.zoom')];
     let at = 0;
     const show = (i) => {
       at = (i + shots.length) % shots.length;

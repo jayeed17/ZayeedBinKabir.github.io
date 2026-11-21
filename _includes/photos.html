@@ -1,0 +1,9 @@
+{%- comment -%}
+  Inline photos for posts. One photo:  {% include photos.html a="/path.webp" a_alt="..." caption="..." %}
+  Two side by side: add b="/path2.webp" b_alt="..."
+{%- endcomment -%}
+<figure class="post-photos{% if include.b %} pair{% endif %}">
+  <a class="zoom" href="{{ include.a }}" data-caption="{{ include.caption | escape }}"><img src="{{ include.a }}" alt="{{ include.a_alt | escape }}" loading="lazy"></a>
+  {%- if include.b %}<a class="zoom" href="{{ include.b }}" data-caption="{{ include.caption | escape }}"><img src="{{ include.b }}" alt="{{ include.b_alt | escape }}" loading="lazy"></a>{% endif %}
+  {%- if include.caption %}<figcaption>{{ include.caption }}</figcaption>{% endif %}
+</figure>

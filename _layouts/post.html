@@ -11,7 +11,7 @@ layout: base
     {% if page.dek %}<p class="dek">{{ page.dek }}</p>{% endif %}
     {% if page.tags.size > 0 %}<ul class="stack">{% for t in page.tags %}<li>{{ t }}</li>{% endfor %}</ul>{% endif %}
   </header>
-  {% if page.cover %}<figure class="article-cover reveal"><img src="{{ page.cover }}" alt="{{ page.cover_alt | default: page.title | escape }}"></figure>{% endif %}
+  {% if page.cover and page.cover_in_page != false %}<figure class="article-cover reveal"><img src="{{ page.cover }}" alt="{{ page.cover_alt | default: page.title | escape }}"></figure>{% endif %}
   <div class="prose reveal">
 {{ content }}
   </div>
@@ -27,6 +27,12 @@ layout: base
     <ol>{% for s in page.sources %}<li><a href="{{ s.url }}">{{ s.name }}</a></li>{% endfor %}</ol>
   </section>
   {% endif %}
+  <div class="lightbox" hidden>
+    <button class="lb-close" aria-label="Close">×</button>
+    <button class="lb-prev" aria-label="Previous photo">‹</button>
+    <figure><img src="" alt=""><figcaption></figcaption></figure>
+    <button class="lb-next" aria-label="Next photo">›</button>
+  </div>
   <nav class="pager" aria-label="More writing">
     {% if page.previous %}<a href="{{ page.previous.url }}"><small>← Older</small>{{ page.previous.title }}</a>{% else %}<span></span>{% endif %}
     {% if page.next %}<a class="next" href="{{ page.next.url }}"><small>Newer →</small>{{ page.next.title }}</a>{% endif %}
