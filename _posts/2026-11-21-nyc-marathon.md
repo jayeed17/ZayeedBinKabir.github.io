@@ -1,6 +1,6 @@
 ---
 title: "26.2 miles through all five boroughs"
-dek: "My first NYC Marathon: a sub-4 goal, not enough training, a whole city cheering, and a Bangladesh flag waiting at the finish."
+dek: "My first NYC Marathon: a sub-4 goal, a whole city cheering, and a Bangladesh flag waiting at the finish."
 tags: [running, nyc, personal]
 og_image: /assets/writing/2026-11-nyc-marathon/running-1.webp
 hidden: true   # preview only: remove this line to publish
@@ -8,7 +8,7 @@ hidden: true   # preview only: remove this line to publish
 
 On November 1, I ran the TCS New York City Marathon. Bib 60400.
 
-Before that day, the longest I had ever run was a half marathon in the spring, in about 2:20. I went in with a goal of breaking four hours and, honestly, not nearly enough training behind it.
+Before that day, the longest I had ever run was a half marathon in the spring, in about 2:20. I went in with one goal: break four hours.
 
 ## Getting to the start
 
